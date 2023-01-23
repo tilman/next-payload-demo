@@ -12,13 +12,16 @@ import withDataLoader from '../../../middleware/dataLoader'
 import findPreference from 'payload/dist/preferences/operations/findOne'
 import updatePreference from 'payload/dist/preferences/operations/update'
 import deletePreference from 'payload/dist/preferences/operations/delete'
+import findVersionByID from 'payload/dist/collections/operations/findVersionByID'
+import { isNumber } from '../../../utilities/isNumber'
 
 async function handler(req, res) {
   try {
     // Unfortunately,
     // There is a route collision between /api/_preferences/[key].js
+    // and /api/_[collection]_versions]/[id].js
     // and /api/[collection]/[id].js
-    // so both need to be handled in this file for now
+    // so all need to be handled in this file for now
     if (req.query.collection === '_preferences') {
       switch (req.method) {
         case 'GET': {
@@ -59,13 +62,35 @@ async function handler(req, res) {
       }
     }
 
+    if (req.query.collection.endsWith('_versions')) {
+      switch (req.method) {
+        case 'GET': {
+          const result = await findVersionByID({
+            collection: req.query.collection,
+            id: req.query.id,
+            req,
+            depth: isNumber(req.query.depth) ? Number(req.query.depth) : undefined,
+            overrideAccess: false,
+            showHiddenFields: false,
+          })
+
+          return res.status(httpStatus.OK).json(result || { message: req.t('general:notFound'), value: null })
+        }
+
+        default: {
+          // swallow other methods for versions
+          return res.status(httpStatus.NOT_FOUND).json(new NotFound(req.t));
+        }
+      }
+    }
+
     switch (req.method) {
       case 'GET': {
         const doc = await req.payload.findByID({
           req,
           collection: req.query.collection,
           id: req.query.id,
-          depth: Number(req.query.depth),
+          depth: isNumber(req.query.depth) ? Number(req.query.depth) : undefined,
           overrideAccess: false,
           draft: req.query.draft === 'true',
         })

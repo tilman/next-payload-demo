@@ -6,7 +6,6 @@ import withPayload from '../../../../middleware/withPayload'
 import withDataLoader from '../../../../middleware/dataLoader'
 
 async function handler(req, res) {
-
   try {
     const docAccessResult = await docAccess({
       id: req.query.id,
