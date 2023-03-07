@@ -39,8 +39,10 @@ const withPayload = async (config, paths) => {
           ...incomingWebpackConfig.resolve,
           alias: {
             ...incomingWebpackConfig.resolve.alias,
-            '@swc/core': mockModulePath,
-            '@swc': mockModulePath,
+            '@swc/core-linux-x64-gnu': mockModulePath,
+            '@swc/core-linux-x64-musl ': mockModulePath,
+            '@swc/wasm': mockModulePath,
+            'webpack': mockModulePath,
             '@payloadcms/next-payload/getPayload': payloadPath || path.resolve(process.cwd(), './payload.ts'),
             'payload-config': configPath,
             payload$: mockModulePath,
