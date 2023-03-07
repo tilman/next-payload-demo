@@ -13,11 +13,7 @@ const withPayload = async (config, paths) => {
     ...config,
     experimental: {
       ...config.experimental,
-      outputFileTracingIgnores: [
-        'node_modules/@swc/core-linux-x64-gnu',
-        'node_modules/@swc/core-linux-x64-musl',
-        'node_modules/@swc/wasm',
-      ],
+      outputFileTracingIgnores: ['**swc/core**'], // See https://github.com/vercel/next.js/issues/42641#issuecomment-1320713368
       appDir: true,
     },
     webpack: (webpackConfig, webpackOptions) => {

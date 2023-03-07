@@ -4,6 +4,9 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = withPayload({
   reactStrictMode: true,
+  experimental: {
+    outputFileTracingIgnores: ['**swc/core**'], // See https://github.com/vercel/next.js/issues/42641#issuecomment-1320713368
+  },
   images: {
     domains: [
       'localhost',
