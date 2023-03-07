@@ -25,6 +25,11 @@ const withPayload = async (config, paths) => {
         ],
       })
 
+      incomingWebpackConfig.module.rules.push({
+        test: /\.(?:ico|gif|png|jpg|jpeg|woff(2)?|eot|ttf|otf|svg)$/i,
+        type: 'asset/resource',
+      })
+
       let newWebpackConfig = {
         ...incomingWebpackConfig,
         plugins: [
@@ -54,8 +59,8 @@ const withPayload = async (config, paths) => {
     transpilePackages: [
       ...config.transpilePackages || [],
       '@payloadcms/next-payload',
-      'payload',
-      'mongoose'
+      // 'payload',
+      // 'mongoose'
     ]
   }
 }
