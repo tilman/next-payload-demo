@@ -41,6 +41,7 @@
     "@types/react": "^18.0.28",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
+    "esbuild": "^0.17.11",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.1",
     "nodemon": "^2.0.6",
