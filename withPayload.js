@@ -1,11 +1,13 @@
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const path = require('path');
+const loadPayloadConfig = require('@payloadcms/next-payload/loadPayloadConfig');
 const mockModulePath = path.resolve(__dirname, './mocks/emptyModule.js');
-const mockCloudStoragePath = path.resolve(__dirname, './mocks/cloudStorage.js');
 const customCSSMockPath = path.resolve(__dirname, './mocks/custom.css'); 
 
 const withPayload = async (config, paths) => {
   const { configPath, cssPath, payloadPath } = paths;
+
+  const payloadConfig = await loadPayloadConfig(configPath);
 
   return {
     ...config,
@@ -25,11 +27,6 @@ const withPayload = async (config, paths) => {
         ],
       })
 
-      incomingWebpackConfig.module.rules.push({
-        test: /\.(?:ico|gif|png|jpg|jpeg|woff(2)?|eot|ttf|otf|svg)$/i,
-        type: 'asset/resource',
-      })
-
       let newWebpackConfig = {
         ...incomingWebpackConfig,
         plugins: [
@@ -42,6 +39,8 @@ const withPayload = async (config, paths) => {
           ...incomingWebpackConfig.resolve,
           alias: {
             ...incomingWebpackConfig.resolve.alias,
+            '@swc/core': mockModulePath,
+            '@swc': mockModulePath,
             '@payloadcms/next-payload/getPayload': payloadPath || path.resolve(process.cwd(), './payload.ts'),
             'payload-config': configPath,
             payload$: mockModulePath,
@@ -50,17 +49,17 @@ const withPayload = async (config, paths) => {
         }
       }
 
-
-      newWebpackConfig.resolve.alias['@payloadcms/plugin-cloud-storage/s3'] = mockCloudStoragePath
-      newWebpackConfig.resolve.alias['@payloadcms/plugin-cloud-storage'] = mockCloudStoragePath
+      if (typeof payloadConfig.admin.webpack === 'function') {
+        return payloadConfig.admin.webpack(newWebpackConfig);
+      }
 
       return newWebpackConfig;
     },
     transpilePackages: [
       ...config.transpilePackages || [],
       '@payloadcms/next-payload',
-      // 'payload',
-      // 'mongoose'
+      'payload',
+      'mongoose'
     ]
   }
 }
