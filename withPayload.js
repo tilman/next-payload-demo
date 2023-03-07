@@ -13,6 +13,7 @@ const withPayload = async (config, paths) => {
     ...config,
     experimental: {
       ...config.experimental,
+      outputFileTracingIgnores: ['**swc+core**', '**esbuild**', '**swc+wasm'],
       appDir: true,
     },
     webpack: (webpackConfig, webpackOptions) => {
@@ -39,9 +40,6 @@ const withPayload = async (config, paths) => {
           ...incomingWebpackConfig.resolve,
           alias: {
             ...incomingWebpackConfig.resolve.alias,
-            '@swc/core-linux-x64-gnu': mockModulePath,
-            '@swc/core-linux-x64-musl ': mockModulePath,
-            '@swc/wasm': mockModulePath,
             'webpack': mockModulePath,
             '@payloadcms/next-payload/getPayload': payloadPath || path.resolve(process.cwd(), './payload.ts'),
             'payload-config': configPath,
