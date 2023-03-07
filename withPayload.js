@@ -13,7 +13,11 @@ const withPayload = async (config, paths) => {
     ...config,
     experimental: {
       ...config.experimental,
-      outputFileTracingIgnores: ['**swc+core**', '**esbuild**', '**swc+wasm'],
+      outputFileTracingIgnores: [
+        'node_modules/@swc/core-linux-x64-gnu',
+        'node_modules/@swc/core-linux-x64-musl',
+        'node_modules/@swc/wasm',
+      ],
       appDir: true,
     },
     webpack: (webpackConfig, webpackOptions) => {
