@@ -1,4 +1,4 @@
-import { getPayload } from "payload/dist/payload";
+import { getPayload, Payload } from "payload/dist/payload";
 import config from './payload.config';
 
 if (!process.env.MONGODB_URI) {
@@ -22,7 +22,7 @@ if (!cached) {
   cached = (global as any).payload = { client: null, promise: null }
 }
 
-export const getPayloadClient = async () => {
+export const getPayloadClient = async (): Promise<Payload> => {
   if (cached.client) {
     return cached.client
   }
